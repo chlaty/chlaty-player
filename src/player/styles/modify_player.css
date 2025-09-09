@@ -1,16 +1,5 @@
-/* Apply to all Plyr instances */
-.plyr {
-    --plyr-color-main: #0ea5e9; /* Accent color (blue) */
-    --plyr-video-controls-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75));
-    --plyr-video-control-color: #f3f4f6; /* Light icons */
-    --plyr-video-control-color-hover: #ffffff;
-    --plyr-video-control-background-hover: #1f2937; /* Dark hover background */
-    --plyr-menu-background: #1f2937;
-    --plyr-menu-color: #f3f4f6;
-    --plyr-tooltip-background: #111827;
-    --plyr-tooltip-color: #f3f4f6;
-    --plyr-font-family: var(--font-family);
+#player { /* Or the actual Vidstack element */
     max-width: 100%;
     max-height: 100%;
+    object-fit: cover; /* Optional: Controls how the video content scales within the player */
 }
-

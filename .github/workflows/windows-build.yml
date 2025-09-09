@@ -1,0 +1,50 @@
+name: Tauri Build on Windows
+
+on:
+  push:
+    branches: [build]
+  pull_request:
+    branches: [build]
+
+jobs:
+  build-tauri:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-pc-windows-msvc
+          - i686-pc-windows-msvc
+          - aarch64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust and Target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Set Linker for i686
+        if: matrix.target == 'i686-pc-windows-msvc'
+        run: echo "CARGO_TARGET_I686_PC_WINDOWS_MSVC_LINKER=link.exe" >> $env:GITHUB_ENV
+
+      - name: Set Linker for aarch64
+        if: matrix.target == 'aarch64-pc-windows-msvc'
+        run: echo "CARGO_TARGET_AARCH64_PC_WINDOWS_MSVC_LINKER=link.exe" >> $env:GITHUB_ENV
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Tauri Build (no bundle)
+        run: npx tauri build --target ${{ matrix.target }} -- --no-bundle
+
+      - name: Upload .exe Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-app-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/*.exe

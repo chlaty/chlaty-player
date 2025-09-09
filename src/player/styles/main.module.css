@@ -6,6 +6,8 @@
     align-items: center;
     box-sizing: border-box;
     position:relative;
+    position: relative;
+    overflow: hidden;
 }
 
 .error{
