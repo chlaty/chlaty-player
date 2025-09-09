@@ -43,8 +43,12 @@ jobs:
       - name: Tauri Build (no bundle)
         run: npx tauri build --no-bundle --target ${{ matrix.target }}
 
-      - name: Upload .exe Artifact
+      - name: Rename Executable
+        run: |
+          mv src-tauri/target/${{ matrix.target }}/release/chlaty-player.exe src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}.exe
+
+      - name: Upload Executable Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tauri-app-${{ matrix.target }}
-          path: src-tauri/target/${{ matrix.target }}/release/*.exe
+          name: chlaty-player-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}.exe
