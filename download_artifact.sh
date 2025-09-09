@@ -54,7 +54,6 @@ declare -A targets=(
   ["windows/i686"]="chlaty-player-i686-pc-windows-msvc.exe"
   ["windows/aarch64"]="chlaty-player-aarch64-pc-windows-msvc.exe"
   ["linux/x86_64"]="chlaty-player-x86_64-unknown-linux-gnu"
-  ["linux/i686"]="chlaty-player-i686-unknown-linux-gnu"
   ["linux/aarch64"]="chlaty-player-aarch64-unknown-linux-gnu"
   ["macos/x86_64"]="chlaty-player-x86_64-apple-darwin"
   ["macos/aarch64"]="chlaty-player-aarch64-apple-darwin"
