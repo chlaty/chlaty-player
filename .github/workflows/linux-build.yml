@@ -47,7 +47,7 @@ jobs:
         run: npm install
 
       - name: Tauri Build (no bundle)
-        run: npx tauri build --target ${{ matrix.target }} -- --no-bundle
+        run: npx tauri build --no-bundle --target ${{ matrix.target }}
 
       - name: Upload Executable Artifact
         uses: actions/upload-artifact@v4
