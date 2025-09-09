@@ -56,7 +56,6 @@ declare -A targets=(
   ["linux/x86_64"]="chlaty-player-x86_64-unknown-linux-gnu"
   ["linux/i686"]="chlaty-player-i686-unknown-linux-gnu"
   ["linux/aarch64"]="chlaty-player-aarch64-unknown-linux-gnu"
-  ["linux/armv7"]="chlaty-player-armv7-unknown-linux-gnueabihf"
   ["macos/x86_64"]="chlaty-player-x86_64-apple-darwin"
   ["macos/aarch64"]="chlaty-player-aarch64-apple-darwin"
 )
