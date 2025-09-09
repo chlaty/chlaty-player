@@ -37,52 +37,67 @@ const MODIFY_FLOADER = ({
 			responseURL: string,
 		};
 
-		loadInternal() {
+		async loadInternal() {
 			const { config, context } = this;
 			if (!config || !context) {
 				return;
 			}
-			const url = context.url;
-
+			let current_url = context.url;
 			const headers:{
-				"Host"?:string,
-				"Origin"?:string,
-				"Referer"?:string,
-			} = {};
+					"Host"?:string,
+					"Origin"?:string,
+					"Referer"?:string,
+				} = {};
 
 			if (host) {headers["Host"] = host};
 			if (origin) {headers["Origin"] = origin};
 			if (referer) {headers["Referer"] = referer};
 			
-			fetch(url,
-				{
-					headers
-				}
-			).then(response => response.arrayBuffer())
-				.then((responseData) => {
+			for (;;) {
+				
+				try {
+					let response = await fetch(current_url,
+						{headers}
+					)
+					
+					if (response.url !== current_url) {
+						
+						let url_obj = new URL(response.url);
+						headers.Origin = "";
+						headers.Host = url_obj.host;
+						current_url = response.url;
+						continue;
+					}
+					const responseData = await response.arrayBuffer()
+					const responseText = new TextDecoder().decode(responseData);
+					
 					this.loader = {
 						readyState: 4,
-						status: 200,
+						status: response.status,
 						statusText: '',
 						responseType: context.responseType,
 						response: responseData,
-						responseText: responseData,
-						responseURL: url,
+						responseText: responseText,
+						responseURL: response.url,
 					};
 					this.readystatechange();
-				}).catch((error) => {
+
+					break;
+				}catch(error) {
 					console.error(error);
 					this.loader = {
-						readyState: 0,
+						readyState: 4,
 						status: 500,
 						statusText: '',
 						responseType: context.responseType,
 						response: null,
 						responseText: null,
-						responseURL: url,
+						responseURL: current_url,
 					};
 					this.readystatechange();
-				});
+					break
+				};
+			}
 			
 		}
 	}

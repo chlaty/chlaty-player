@@ -156,6 +156,9 @@ const Player = () => {
                     src={{src:SOURCE(), type:"application/x-mpegurl"}}
                     storage={"vidstack-storage"}
                     on:provider-change={onProviderChange}
+                    style={{ 
+                        "border-radius": '0',
+                    }}
                 >
                     <media-provider>
                         <For each={TRACK_DATA()}>{(item) => 
