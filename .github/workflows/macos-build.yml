@@ -22,6 +22,11 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           target: ${{ matrix.target }}
+      
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -32,10 +37,14 @@ jobs:
         run: npm install
 
       - name: Tauri Build (no bundle)
-        run: npx tauri build --target ${{ matrix.target }} -- --no-bundle
+        run: npx tauri build --no-bundle --target ${{ matrix.target }}
+
+      - name: Rename Executable
+        run: |
+          mv src-tauri/target/${{ matrix.target }}/release/chlaty-player src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}
 
       - name: Upload Executable Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: chlaty-player-${{ matrix.target }}
-          path: src-tauri/target/${{ matrix.target }}/release/chlaty-player
+          name: artifact-chlaty-player-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}

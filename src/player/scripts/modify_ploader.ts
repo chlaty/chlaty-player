@@ -37,12 +37,12 @@ const MODIFY_PLOADER = ({
 			responseURL: string,
 		};
 
-		loadInternal() {
+		async loadInternal() {
 			const { config, context } = this;
 			if (!config || !context) {
 				return;
 			}
-			const url = context.url;
+			let current_url = context.url;
 			
 			const headers:{
 				"Host"?:string,
@@ -53,35 +53,51 @@ const MODIFY_PLOADER = ({
 			if (host) {headers["Host"] = host};
 			if (origin) {headers["Origin"] = origin};
 			if (referer) {headers["Referer"] = referer};
-			console.log(url)
-			fetch(url, {
-				headers,
-			}).then(async (response) => {
-					const responseData = await response.arrayBuffer();
-					const responseText = new TextDecoder().decode(responseData); // Decode to string
+			for (;;) {
+
+				try {
+					let response = await fetch(current_url,
+						{headers}
+					)
+					
+					if (response.url !== current_url) {
+						
+						let url_obj = new URL(response.url);
+						headers.Origin = "";
+						headers.Host = url_obj.host;
+						current_url = response.url;
+						continue;
+					}
+					const responseData = await response.arrayBuffer()
+					const responseText = new TextDecoder().decode(responseData);
+					
 					this.loader = {
 						readyState: 4,
-						status: 200,
+						status: response.status,
 						statusText: '',
 						responseType: context.responseType,
 						response: responseData,
 						responseText: responseText,
-						responseURL: url,
+						responseURL: response.url,
 					};
 					this.readystatechange();
-				}).catch((error) => {
+
+					break;
+				}catch(error) {
 					console.error(error);
 					this.loader = {
-						readyState: 0,
+						readyState: 4,
 						status: 500,
 						statusText: '',
 						responseType: context.responseType,
 						response: null,
 						responseText: null,
-						responseURL: url,
+						responseURL: current_url,
 					};
 					this.readystatechange();
-				});
+					break
+				};
+			}
 			
 		}
 	}

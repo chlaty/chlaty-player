@@ -31,6 +31,11 @@ jobs:
       - name: Set Linker for aarch64
         if: matrix.target == 'aarch64-pc-windows-msvc'
         run: echo "CARGO_TARGET_AARCH64_PC_WINDOWS_MSVC_LINKER=link.exe" >> $env:GITHUB_ENV
+      
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -41,10 +46,14 @@ jobs:
         run: npm install
 
       - name: Tauri Build (no bundle)
-        run: npx tauri build --target ${{ matrix.target }} -- --no-bundle
+        run: npx tauri build --no-bundle --target ${{ matrix.target }}
 
-      - name: Upload .exe Artifact
+      - name: Rename Executable
+        run: |
+          mv src-tauri/target/${{ matrix.target }}/release/chlaty-player.exe src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}.exe
+
+      - name: Upload Executable Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tauri-app-${{ matrix.target }}
-          path: src-tauri/target/${{ matrix.target }}/release/*.exe
+          name: artifact-chlaty-player-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/chlaty-player-${{ matrix.target }}.exe
