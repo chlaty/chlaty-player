@@ -52,20 +52,29 @@ const MODIFY_FLOADER = ({
 			if (host) {headers["Host"] = host};
 			if (origin) {headers["Origin"] = origin};
 			if (referer) {headers["Referer"] = referer};
+			// console.log("base url: ", current_url);
+			// console.log("base headers: ", headers);
 			
 			for (;;) {
 				
 				try {
+					
+
 					let response = await fetch(current_url,
 						{headers}
 					)
 					
-					if (response.url !== current_url) {
+					if ((response.url !== current_url)) {
 						
 						let url_obj = new URL(response.url);
-						headers.Origin = "";
+						headers.Origin = origin;
 						headers.Host = url_obj.host;
+						headers.Referer = referer;
 						current_url = response.url;
+
+						// console.log("redirect url: ",current_url)
+						// console.log("redirect headers: ", headers)
+
 						continue;
 					}
 					const responseData = await response.arrayBuffer()
