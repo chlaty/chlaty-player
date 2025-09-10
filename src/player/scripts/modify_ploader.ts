@@ -60,7 +60,7 @@ const MODIFY_PLOADER = ({
 						{headers}
 					)
 					
-					if (response.url !== current_url) {
+					if ((response.url !== current_url)) {
 						
 						let url_obj = new URL(response.url);
 						headers.Origin = "";
