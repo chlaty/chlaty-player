@@ -8,7 +8,7 @@ fi
 
 # Define ENV
 REPO="chlaty/chlaty-player"
-VERSION="0.1.3"
+VERSION="0.1.0"
 OUTPUT_DIR="artifacts"
 
 
